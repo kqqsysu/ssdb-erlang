@@ -28,7 +28,7 @@ start(Host,Port,PoolSize,Password)->
     IsReconnect = 0,
     start(Host,Port,PoolSize,Password,IsReconnect).
 start(Host,Port,PoolSize,Password,IsReconnect) ->
-    ssdb_sup:start_link(),
+    application:ensure_started(ssdb),
     ssdb_sup:start_pool(Host,Port,PoolSize,Password,IsReconnect).
 
 query(Cmd) ->

@@ -6,6 +6,7 @@ ERL := erl
 
 all: ebin
 	$(ERL) -make
+	(cp src/ssdb.app.src $(EBIN_DIR)/ssdb.app)
 
 ebin:
 	(mkdir -p $(EBIN_DIR))
