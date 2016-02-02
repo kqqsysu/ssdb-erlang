@@ -11,7 +11,7 @@
 -include("ssdb.hrl").
 
 -export([start/0,start/2,start/3,start/4,start/5,start/6]).
--export([query/1,query/2]).
+-export([query/1, query/2, query/3]).
 
 
 
@@ -42,6 +42,12 @@ query(Pid,[Cmd | _] = CmdList) ->
     parse_res(AtomCmd,Res);
 query(Pid,Cmd) ->
     ssdb_pool:query(Pid,[Cmd]).
+query(Pid, [Cmd | _] = CmdList, Timeout) ->
+    Res = ssdb_pool:query(Pid, CmdList, Timeout),
+    AtomCmd = to_atom(Cmd),
+    parse_res(AtomCmd, Res);
+query(Pid, Cmd, Timeout) ->
+    ssdb_pool:query(Pid, [Cmd], Timeout).
 
 parse_res(Cmd,Res) when Cmd == 'zavg' ->
     case Res of
