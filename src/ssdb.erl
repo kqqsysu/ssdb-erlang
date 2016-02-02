@@ -110,7 +110,7 @@ parse_res(Cmd,Res) when Cmd == 'multi_exists';Cmd == 'multi_hexists'; Cmd == 'mu
             Res
     end;
 
-parse_res(Cmd,Res) when 'scan';Cmd == 'rscan';Cmd == 'zscan';Cmd == 'zrscan';Cmd == 'zrange';Cmd == 'zrrange';Cmd == 'hscan';Cmd == 'hrscan';Cmd == 'hgetall';Cmd == 'multi_hsize';Cmd == 'multi_zsize';Cmd == 'multi_get';Cmd == 'multi_hget';Cmd == 'multi_zget';Cmd == 'zpop_front';Cmd == 'zpop_back' ->
+parse_res(Cmd,Res) when Cmd == 'scan';Cmd == 'rscan';Cmd == 'zscan';Cmd == 'zrscan';Cmd == 'zrange';Cmd == 'zrrange';Cmd == 'hscan';Cmd == 'hrscan';Cmd == 'hgetall';Cmd == 'multi_hsize';Cmd == 'multi_zsize';Cmd == 'multi_get';Cmd == 'multi_hget';Cmd == 'multi_zget';Cmd == 'zpop_front';Cmd == 'zpop_back' ->
     case Res of
         [<<"ok">> | Data] ->
             case atom_to_list(Cmd) of
@@ -149,7 +149,7 @@ parse_mutil_return([],Res) ->
 
 parse_mutil_return2([Key,Val | T],Res) ->
     NewRes = [{Key,Val} | Res],
-    parse_mutil_return(T,NewRes);
+    parse_mutil_return2(T,NewRes);
 parse_mutil_return2([],Res) ->
     lists:reverse(Res).
 
