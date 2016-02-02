@@ -12,12 +12,12 @@
 
 -export([init/1,handle_cast/2,handle_call/3,handle_info/2,terminate/2,code_change/3]).
 
--export([start_link/5,query/2]).
+-export([start_link/6,query/2]).
 
 -define(SSDB_QUERY_TIMEOUT,(60 * 1000)).    %% 60 seconds
 
-start_link(Host,Port,PoolSize,Password,IsReconnect)->
-    gen_server:start_link({local,?SSDB_SERVER},?MODULE,[Host,Port,PoolSize,Password,IsReconnect],[]).
+start_link(PoolName, Host, Port, PoolSize, Password, IsReconnect)->
+    gen_server:start_link({local, PoolName}, ?MODULE, [Host, Port, PoolSize, Password, IsReconnect], []).
 
 query(Pid,Cmd) ->
     gen_server:call(Pid,{ssdb_query,Cmd},?SSDB_QUERY_TIMEOUT).

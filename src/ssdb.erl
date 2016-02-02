@@ -10,7 +10,7 @@
 
 -include("ssdb.hrl").
 
--export([start/0,start/2,start/3,start/4,start/5]).
+-export([start/0,start/2,start/3,start/4,start/5,start/6]).
 -export([query/1,query/2]).
 
 
@@ -29,7 +29,10 @@ start(Host,Port,PoolSize,Password)->
     start(Host,Port,PoolSize,Password,IsReconnect).
 start(Host,Port,PoolSize,Password,IsReconnect) ->
     application:ensure_started(ssdb),
-    ssdb_sup:start_pool(Host,Port,PoolSize,Password,IsReconnect).
+    ssdb_sup:start_pool(?SSDB_SERVER,Host,Port,PoolSize,Password,IsReconnect).
+start(PoolName, Host, Port, PoolSize, Password, IsReconnect) ->
+    application:ensure_started(ssdb),
+    ssdb_sup:start_pool(PoolName, Host, Port, PoolSize, Password, IsReconnect).
 
 query(Cmd) ->
     query(?SSDB_SERVER,Cmd).
