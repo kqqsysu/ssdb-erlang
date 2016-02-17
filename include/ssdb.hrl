@@ -1,5 +1,5 @@
--define(PRINT(MSG),io:format("~p ~w " ++ MSG ++ " ~n",[?MODULE,?LINE])).
--define(PRINT(MSG,INFO),io:format("~p ~w " ++ MSG ++ " ~n",[?MODULE,?LINE] ++ INFO)).
+-define(PRINT(MSG), lager:info("~p ~w " ++ MSG ++ " ~n", [?MODULE,?LINE])).
+-define(PRINT(MSG,INFO), lager:info("~p ~w " ++ MSG ++ " ~n", [?MODULE,?LINE] ++ INFO)).
 
 
 -define(SSDB_TCP_OPTS,[binary,{active,true},{packet,0},{keepalive,true}]).
