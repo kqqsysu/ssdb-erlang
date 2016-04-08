@@ -10,8 +10,8 @@
 
 -include("ssdb.hrl").
 
--export([start/0,start/2,start/3,start/4,start/5]).
--export([query/1,query/2]).
+-export([start/0,start/2,start/3,start/4,start/5,start/6]).
+-export([query/1, query/2, query/3]).
 
 
 
@@ -29,7 +29,10 @@ start(Host,Port,PoolSize,Password)->
     start(Host,Port,PoolSize,Password,IsReconnect).
 start(Host,Port,PoolSize,Password,IsReconnect) ->
     application:ensure_started(ssdb),
-    ssdb_sup:start_pool(Host,Port,PoolSize,Password,IsReconnect).
+    ssdb_sup:start_pool(?SSDB_SERVER,Host,Port,PoolSize,Password,IsReconnect).
+start(PoolName, Host, Port, PoolSize, Password, IsReconnect) ->
+    application:ensure_started(ssdb),
+    ssdb_sup:start_pool(PoolName, Host, Port, PoolSize, Password, IsReconnect).
 
 query(Cmd) ->
     query(?SSDB_SERVER,Cmd).
@@ -39,6 +42,12 @@ query(Pid,[Cmd | _] = CmdList) ->
     parse_res(AtomCmd,Res);
 query(Pid,Cmd) ->
     ssdb_pool:query(Pid,[Cmd]).
+query(Pid, [Cmd | _] = CmdList, Timeout) ->
+    Res = ssdb_pool:query(Pid, CmdList, Timeout),
+    AtomCmd = to_atom(Cmd),
+    parse_res(AtomCmd, Res);
+query(Pid, Cmd, Timeout) ->
+    ssdb_pool:query(Pid, [Cmd], Timeout).
 
 parse_res(Cmd,Res) when Cmd == 'zavg' ->
     case Res of
@@ -110,7 +119,7 @@ parse_res(Cmd,Res) when Cmd == 'multi_exists';Cmd == 'multi_hexists'; Cmd == 'mu
             Res
     end;
 
-parse_res(Cmd,Res) when 'scan';Cmd == 'rscan';Cmd == 'zscan';Cmd == 'zrscan';Cmd == 'zrange';Cmd == 'zrrange';Cmd == 'hscan';Cmd == 'hrscan';Cmd == 'hgetall';Cmd == 'multi_hsize';Cmd == 'multi_zsize';Cmd == 'multi_get';Cmd == 'multi_hget';Cmd == 'multi_zget';Cmd == 'zpop_front';Cmd == 'zpop_back' ->
+parse_res(Cmd,Res) when Cmd == 'scan';Cmd == 'rscan';Cmd == 'zscan';Cmd == 'zrscan';Cmd == 'zrange';Cmd == 'zrrange';Cmd == 'hscan';Cmd == 'hrscan';Cmd == 'hgetall';Cmd == 'multi_hsize';Cmd == 'multi_zsize';Cmd == 'multi_get';Cmd == 'multi_hget';Cmd == 'multi_zget';Cmd == 'zpop_front';Cmd == 'zpop_back' ->
     case Res of
         [<<"ok">> | Data] ->
             case atom_to_list(Cmd) of
@@ -149,7 +158,7 @@ parse_mutil_return([],Res) ->
 
 parse_mutil_return2([Key,Val | T],Res) ->
     NewRes = [{Key,Val} | Res],
-    parse_mutil_return(T,NewRes);
+    parse_mutil_return2(T,NewRes);
 parse_mutil_return2([],Res) ->
     lists:reverse(Res).
 

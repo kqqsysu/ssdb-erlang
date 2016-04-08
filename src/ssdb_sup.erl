@@ -10,7 +10,7 @@
 
 -include("ssdb.hrl").
 
--export([start_link/0,init/1,start_pool/5]).
+-export([start_link/0,init/1,start_pool/6]).
 
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
@@ -18,7 +18,7 @@ start_link() ->
 init([]) -> 
 	{ok, {{one_for_one, 3, 10}, []}}.
 
-start_pool(Host,Port,PoolSize,Password,IsReconnect) ->
+start_pool(PoolName, Host, Port, PoolSize, Password, IsReconnect) ->
 	supervisor:start_child(?MODULE,
-                            {ssdb_pool, {ssdb_pool, start_link, [Host,Port,PoolSize,Password,IsReconnect]}, transient,
+                            {PoolName, {ssdb_pool, start_link, [PoolName, Host, Port, PoolSize, Password, IsReconnect]}, transient,
 							5000, worker, [ssdb_pool]}).
