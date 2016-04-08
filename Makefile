@@ -1,6 +1,5 @@
 PROJECT = ssdb-client
 
-DIALYZER = dialyzer
 REBAR = "./rebar"
 
 all: app
