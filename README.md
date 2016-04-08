@@ -10,7 +10,7 @@ compile code use make
 
 $ make
 
-$ erl -pa ebin
+$ erl -pa ebin -pa deps/goldrush/ebin/ -pa deps/lager/ebin
 
 1> ssdb:start("localhost",8888). 
 
@@ -24,7 +24,9 @@ ssdb:query([set,a,<<"this is a test">>]).
 3> ssdb:query([get,a]).
 
 {ok,<<"this is a test">>}
+
 4> ssdb:query([hset,h,k,<<"test hset">>]).
+
 {ok,1}
 
 5> ssdb:query([hget,h,k]). 
