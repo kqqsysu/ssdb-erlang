@@ -14,7 +14,6 @@ app: deps
 
 clean:
 	@$(REBAR) clean
-	rm -f test/*.beam
 	rm -f erl_crash.dump
 
 docs: clean-docs
